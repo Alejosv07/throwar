@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export default class SceneManager {
+export class SceneManager {
     /**
      * 
      * @param {*} parameters 

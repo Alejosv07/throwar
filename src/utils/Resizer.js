@@ -1,6 +1,4 @@
-import { SceneManager } from "../scene/SceneManager.js";
-
-export default class Resizer {
+export class Resizer {
   constructor(sceneManagerInstance) {
     this.sceneManager = sceneManagerInstance;
   }
@@ -12,7 +10,7 @@ export default class Resizer {
 
       this.sceneManager.camera.aspect = w / h;
       this.sceneManager.camera.updateProjectionMatrix();
-      this.sceneManager.renderer.setSize(w, h);
+      this.sceneManager.render.setSize(w, h);
     });
   }
 }

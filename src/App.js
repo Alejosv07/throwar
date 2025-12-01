@@ -1,5 +1,5 @@
-import { SceneManager } from "../src/scene/SceneManager.js"
-import { Resizer } from "../src/utils/Resizer.js"
+import { SceneManager } from "./scene/SceneManager.js"
+import { Resizer } from "./utils/Resizer.js"
 
 ((d,w)=>{
     const sceneManager = new SceneManager(
