@@ -1,122 +1,135 @@
-:root{
-    --identy-color: #11A5FD;
+:root {
+  --identy-color: #11a5fd;
 }
 
-*{
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
 }
 
-canvas{
-    display: block;
-}
-.main{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    gap: 2em;
-}
-.game-name{
-    text-align: center;
-}
-.title{
-    font-size: 4rem;
-    overflow: hidden;
-}
-.identy-color{
-    color: var(--identy-color);
-}
-.startButton{
-    padding: 0.5em 1em;
-    border: 0;
-    font-size: 1.2rem;
-    color: var(--identy-color);
-    background-color: black;
-    cursor: pointer;
-    animation-name: buttonAnimation;
-    animation-duration: 2.6s;
-    animation-timing-function: cubic-bezier(0,1.95,1,-0.61);
-    animation-fill-mode: backwards;
-}
-.bybox{
-    display: inline-block;
-    overflow: hidden;
+canvas {
+  display: block;
+  pointer-events: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -10;
 }
 
-.by{
-    display: inline-block;
-    animation-name: wordLeft;
-    animation-duration: 3s;
-    animation-timing-function: ease;
-    animation-fill-mode: backwards;
+.main {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  gap: 2em;
 }
-.throw{
-    display: inline-block;
-    animation-name: wordUp;
-    animation-duration: 3s;
-    animation-timing-function: ease;
-    animation-fill-mode: backwards;
+.game-name {
+  text-align: center;
 }
-.show{
-    display: inline-block;
-    animation-name: wordShow;
-    animation-duration: 3s;
-    animation-timing-function: ease;
-    animation-fill-mode: backwards;
+.title {
+  font-size: 4rem;
+  overflow: hidden;
+}
+.identy-color {
+  color: var(--identy-color);
+}
+.startButton {
+  padding: 0.5em 1em;
+  border: 0;
+  font-size: 1.2rem;
+  color: var(--identy-color);
+  background-color: black;
+  cursor: pointer;
+  pointer-events: auto;
+  animation-name: buttonAnimation;
+  animation-duration: 2.6s;
+  animation-timing-function: cubic-bezier(0, 1.95, 1, -0.61);
+  animation-fill-mode: backwards;
 }
 
-.ar{
-    display: inline-block;
-    animation-name: wordDown;
-    animation-duration: 3s;
-    animation-timing-function: ease;
-    animation-fill-mode: backwards;
+.social-network,.lil-gui,.lil-gui>*{
+    pointer-events: auto;
+}
+
+.bybox {
+  display: inline-block;
+  overflow: hidden;
+}
+
+.by {
+  display: inline-block;
+  animation-name: wordLeft;
+  animation-duration: 3s;
+  animation-timing-function: ease;
+  animation-fill-mode: backwards;
+}
+.throw {
+  display: inline-block;
+  animation-name: wordUp;
+  animation-duration: 3s;
+  animation-timing-function: ease;
+  animation-fill-mode: backwards;
+}
+.show {
+  display: inline-block;
+  animation-name: wordShow;
+  animation-duration: 3s;
+  animation-timing-function: ease;
+  animation-fill-mode: backwards;
+}
+
+.ar {
+  display: inline-block;
+  animation-name: wordDown;
+  animation-duration: 3s;
+  animation-timing-function: ease;
+  animation-fill-mode: backwards;
 }
 
 @keyframes wordUp {
-    0%{
-        transform: translateY(100%);
-    }
-    100%{
-        transform: translateY(0);
-    }
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 @keyframes wordDown {
-    0%{
-        transform: translateY(-100%);
-    }
-    100%{
-        transform: translateY(0);
-    }
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 @keyframes wordShow {
-    0%{
-        opacity: 0;
-        transform: scale(0);
-    }
-    100%{
-        opacity: 1;
-        transform: scale(1);
-    }
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 @keyframes wordLeft {
-    0%{
-        transform: translateX(-100%);
-    }
-    100%{
-        transform: translateX(0);
-    }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 @keyframes buttonAnimation {
-    0%{
-        transform: translateY(-100%);
-    }
-    100%{
-        transform: translateY(0);
-    }
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
