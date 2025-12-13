@@ -24,19 +24,25 @@ canvas {
   flex-direction: column;
   align-items: center;
   height: 100vh;
+}
+.game{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   gap: 2em;
 }
-.game-name {
+.game__box__name {
   text-align: center;
 }
-.title {
+.game__box__title {
   font-size: 4rem;
   overflow: hidden;
 }
 .identy-color {
   color: var(--identy-color);
 }
-.startButton {
+.game__box__startButton {
   padding: 0.5em 1em;
   border: 0;
   font-size: 1.2rem;
@@ -46,17 +52,20 @@ canvas {
   pointer-events: auto;
   animation-name: buttonAnimation;
   animation-duration: 2.6s;
-  animation-timing-function: cubic-bezier(0, 1.95, 1, -0.61);
+  animation-timing-function: linear;
   animation-fill-mode: backwards;
 }
 
-.social-network,.lil-gui,.lil-gui>*{
-    pointer-events: auto;
+.social-network,
+.lil-gui,
+.lil-gui > * {
+  pointer-events: auto;
 }
 
 .bybox {
-  display: inline-block;
+  display: block;
   overflow: hidden;
+  text-align: center;
 }
 
 .by {
@@ -89,6 +98,65 @@ canvas {
   animation-fill-mode: backwards;
 }
 
+.loading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  z-index: -20;
+}
+.game.is-hidden,
+.loading.is-hidden {
+    opacity: 0; 
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.loading__word > * {
+  display: inline-block;
+}
+
+.loading__word > :nth-child(even) {
+  animation-name: wordUpDown;
+  animation-duration: 3s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+
+.loading__word > :nth-child(odd) {
+  animation-name: wordUpDown;
+  animation-duration: 5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+
+@keyframes wordUpDown {
+  0% {
+    transform: translateY(50%);
+  }
+  50% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(50%);
+  }
+}
+
+@keyframes wordUp {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
 @keyframes wordUp {
   0% {
     transform: translateY(100%);
