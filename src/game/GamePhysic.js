@@ -19,7 +19,7 @@ export class GamePhysic {
       type: Body.KINEMATIC
     });
     sphereBody.addEventListener('collide', (event) => {
-        const collidedBody = event.body; // El cuerpo que la pelota golpeó
+        const collidedBody = event.body;
     });
     sphereBody.position.set(0, radius, 0);
     return sphereBody;

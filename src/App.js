@@ -65,9 +65,9 @@ import { Texture } from "./utils/Texture.js";
 
     const direction = raycaster.ray.direction.clone();
 
-    const MAX_FORCE = 50;
-    const MIN_FORCE = 5;
-    const MAX_DURATION = 1000; // 1 segundo de arrastre máximo
+    const MAX_FORCE = 100;
+    const MIN_FORCE = 10;
+    const MAX_DURATION = 1000;
 
     const forceFactor = Math.min(dragDuration / MAX_DURATION, 1);
     const launchForce = MIN_FORCE + (MAX_FORCE - MIN_FORCE) * forceFactor;

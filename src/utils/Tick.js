@@ -31,27 +31,20 @@ export class Tick {
       this.gameState.remainingAttempts--;
       this.gameState.isBallInPlay = false;
 
-      // 1. Detener la pelota y hacerla cinemática de nuevo
       this.ballPhysic.type = Body.KINEMATIC;
       this.ballPhysic.velocity.set(0, 0, 0);
       this.ballPhysic.angularVelocity.set(0, 0, 0);
 
-      // 2. Colocarla en la posición de origen deseada (la posición que tienes en el código principal)
       const startPosition = new THREE.Vector3(1.7, 6.6, -13);
       this.ballPhysic.position.copy(startPosition);
       this.ballThreejs.mesh.position.copy(startPosition);
 
-      // 3. Notificar al usuario (por ejemplo, actualizando la GUI)
       console.log(`Intentos restantes: ${this.gameState.remainingAttempts}`);
-      // Aquí podrías llamar a una función de la GUI para actualizar el marcador
 
-      // 4. Si los intentos terminaron, terminar el juego
       if (this.gameState.remainingAttempts <= 0) {
         console.log("¡Juego terminado! Puntuación final: ...");
-        // Lógica de fin de juego
       }
 
-      // 5. Reiniciar el seguimiento de colisiones para el próximo lanzamiento
       this.gameState.cubesHitThisAttempt.clear();
     }
   }
@@ -69,22 +62,13 @@ export class Tick {
       this.cubesPhy.forEach((cubeBody, index) => {
         const cubeMesh = this.cubesThree[index];
 
-        // Verifica si el cubo está durmiendo (en reposo)
         if (cubeBody.sleepState === Body.SLEEPING) {
-          // Verifica si ha habido una rotación significativa desde el inicio.
-          // Una rotación de ~0.05 a 0.1 radianes (5-6 grados) indica un derribo.
-          const angle = cubeMesh.quaternion.angleTo(new THREE.Quaternion()); // Comparar con rotación inicial (si es 0, 0, 0)
+          const angle = cubeMesh.quaternion.angleTo(new THREE.Quaternion());
 
           if (angle > 0.1 && !this.gameState.cubesHitThisAttempt.has(cubeBody)) {
-            // ** El cubo fue derribado y no ha sido contado **
-            this.gameState.cubesHitThisAttempt.add(cubeBody); // Añadir al set para no contarlo de nuevo
+            this.gameState.cubesHitThisAttempt.add(cubeBody);
 
-            // Lógica de Puntuación:
-            console.log(`¡Cubo ${index} derribado! Puntos +1`);
-            // Actualiza tu marcador global aquí.
-
-            // Opcional: Podrías marcar el cubo como 'STATIC' y cambiar su color
-            // para que ya no interactúe y visualmente sea un derribo.
+            console.log(`Cubo ${index} Puntos +1`);
           }
         }
       });
@@ -100,7 +84,6 @@ export class Tick {
       this.ballPhysic.type === Body.DYNAMIC &&
       this.ballPhysic.position.y < -5
     ) {
-      // La pelota ha caído por debajo del nivel de juego (-5 en Y)
       this.resetBall();
     }
 
