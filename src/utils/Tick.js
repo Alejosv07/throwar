@@ -68,6 +68,7 @@ export class Tick {
     this.gameState.remainingAttempts = 3;
     this.gameState.cubesHitThisAttempt.clear();
     this.gameMenu.updatePoint(this.gameState.cubesHitThisAttempt.size);
+    this.gameMenu.updateLife(this.gameState.remainingAttempts);
 
     let skip = 0;
     for (let index = 0; index < this.cubesPhy.length; index++) {
@@ -130,7 +131,6 @@ export class Tick {
     if (this.ballPhysic.position.z > 11) {
       this.resetBall();
     }
-    console.log(this.gameState.isBallInPlay);
     
     this.control.update();
     this.render.render(this.scene, this.camera);

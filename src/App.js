@@ -92,7 +92,6 @@ import gsap from "gsap";
   };
 
   const onMouseDown = () => {
-    console.log("disparado");
     isDragging = true;
     dragStartTime = performance.now();
   };
