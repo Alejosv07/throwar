@@ -1,5 +1,7 @@
 import { Body } from "cannon-es";
 import * as THREE from "three";
+import gsap from "gsap";
+
 export class Tick {
   constructor(
     renderInstance,
@@ -11,7 +13,8 @@ export class Tick {
     ballPhysic,
     cubesPhy,
     cubesThree,
-    gameState
+    gameState,
+    gameMenu
   ) {
     this.control = control.control;
     this.render = renderInstance;
@@ -24,11 +27,16 @@ export class Tick {
     this.cubesPhy = cubesPhy;
     this.cubesThree = cubesThree;
     this.gameState = gameState;
+    this.gameMenu = gameMenu;
+    console.log(this.gameState);
+    
   }
+  arrayPositionCubes = [];
 
   resetBall() {
     if (this.gameState.isBallInPlay) {
       this.gameState.remainingAttempts--;
+      this.gameMenu.updateLife(this.gameState.remainingAttempts);
       this.gameState.isBallInPlay = false;
 
       this.ballPhysic.type = Body.KINEMATIC;
@@ -39,15 +47,51 @@ export class Tick {
       this.ballPhysic.position.copy(startPosition);
       this.ballThreejs.mesh.position.copy(startPosition);
 
-      console.log(`Intentos restantes: ${this.gameState.remainingAttempts}`);
-
       if (this.gameState.remainingAttempts <= 0) {
         console.log("¡Juego terminado! Puntuación final: ...");
+        this.gameMenu.addGameResult();
+        this.gameMenu.addEventListenerButtonPlayAgain(this.playAgain);
+        gsap.to(this.camera.position, {
+          x: 10.91,
+          y: 10.47,
+          z: -14.5,
+          duration: 2,
+          ease: "power2.inOut",
+        });
       }
-
-      this.gameState.cubesHitThisAttempt.clear();
     }
   }
+  
+  playAgain = () => {
+    
+    this.gameState.isBallInPlay = false;
+    this.gameState.remainingAttempts = 3;
+    this.gameState.cubesHitThisAttempt.clear();
+    this.gameMenu.updatePoint(this.gameState.cubesHitThisAttempt.size);
+
+    let skip = 0;
+    for (let index = 0; index < this.cubesPhy.length; index++) {
+      this.cubesPhy[index].position.set(
+        this.arrayPositionCubes[skip],
+        this.arrayPositionCubes[skip + 1],
+        this.arrayPositionCubes[skip + 2]
+      );
+      skip += 3;
+      this.cubesPhy[index].velocity.set(0, 0, 0);
+      this.cubesPhy[index].angularVelocity.set(0, 0, 0);
+      this.cubesPhy[index].wakeUp();
+      this.cubesPhy[index].quaternion.set(0, 0, 0, 1);
+      this.cubesThree[index].position.copy(this.cubesPhy[index].position);
+      this.cubesThree[index].quaternion.copy(this.cubesPhy[index].quaternion);
+    }
+    gsap.to(this.camera.position, {
+      x: 1.7,
+      y: 14,
+      z: -15.5,
+      duration: 2,
+      ease: "power2.inOut",
+    });
+  };
 
   bucleTick = () => {
     const deltaTime = this.clock.getDelta();
@@ -65,10 +109,12 @@ export class Tick {
         if (cubeBody.sleepState === Body.SLEEPING) {
           const angle = cubeMesh.quaternion.angleTo(new THREE.Quaternion());
 
-          if (angle > 0.1 && !this.gameState.cubesHitThisAttempt.has(cubeBody)) {
+          if (
+            angle > 0.1 &&
+            !this.gameState.cubesHitThisAttempt.has(cubeBody)
+          ) {
             this.gameState.cubesHitThisAttempt.add(cubeBody);
-
-            console.log(`Cubo ${index} Puntos +1`);
+            this.gameMenu.updatePoint(this.gameState.cubesHitThisAttempt.size);
           }
         }
       });
@@ -80,13 +126,12 @@ export class Tick {
       this.cubesThree[index].position.copy(this.cubesPhy[index].position);
       this.cubesThree[index].quaternion.copy(this.cubesPhy[index].quaternion);
     }
-    if (
-      this.ballPhysic.type === Body.DYNAMIC &&
-      this.ballPhysic.position.y < -5
-    ) {
+
+    if (this.ballPhysic.position.z > 11) {
       this.resetBall();
     }
-
+    console.log(this.gameState.isBallInPlay);
+    
     this.control.update();
     this.render.render(this.scene, this.camera);
     requestAnimationFrame(this.bucleTick);

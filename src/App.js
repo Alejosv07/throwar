@@ -11,6 +11,7 @@ import { GuiTest } from "./gui/GuiTest.js";
 import * as THREE from "three";
 import { Body } from "cannon-es";
 import { Texture } from "./utils/Texture.js";
+import gsap from "gsap";
 
 ((d, w) => {
   const loading = new Loading(d);
@@ -23,6 +24,7 @@ import { Texture } from "./utils/Texture.js";
   const textureUtil = new Texture(textureLoader);
   let cubesPhy = [];
   let cubesThree = [];
+  let tick;
   const ballPhysic = gamePhysic.createBallBody();
   ballPhysic.position.copy(ballThreejs.mesh.position);
   gamePhysic.creareFloor();
@@ -53,6 +55,7 @@ import { Texture } from "./utils/Texture.js";
     isBallInPlay: false,
     cubesHitThisAttempt: new Set(),
   };
+
   const shootBall = (event) => {
     if (gameState.remainingAttempts <= 0) return;
     const dragEndTime = performance.now();
@@ -88,47 +91,58 @@ import { Texture } from "./utils/Texture.js";
     dragStartTime = 0;
   };
 
-  const onMouseDown = (event) => {
+  const onMouseDown = () => {
+    console.log("disparado");
     isDragging = true;
     dragStartTime = performance.now();
-    control.control.enabled = false;
   };
 
   const onMouseUp = (event) => {
     if (isDragging) {
       shootBall(event);
-      control.control.enabled = true;
     }
   };
 
-  const canvas = d.querySelector("canvas.webgl");
-  canvas.addEventListener("mousedown", onMouseDown);
-  canvas.addEventListener("mouseup", onMouseUp);
-  canvas.addEventListener("touchstart", (e) => onMouseDown(e.touches[0]));
-  canvas.addEventListener("touchend", (e) => onMouseUp(e.changedTouches[0]));
-
   const startGame = () => {
+    isDragging = false;
+    dragStartTime = 0;
+
     let cubes = 100;
-    textureUtil.loadTexture("img/logo.jpeg", ballThreejs.mesh.material).then(() => {
-      sceneManager.scene.add(ballThreejs.mesh);
-    });
-    cubesPhy.push(...gamePhysic.createCubes(cubes, 10));
+    textureUtil
+      .loadTexture("img/logo.jpeg", ballThreejs.mesh.material)
+      .then(() => {
+        sceneManager.scene.add(ballThreejs.mesh);
+      });
+    const objCubes = gamePhysic.createCubes(cubes, 10);
+    tick.arrayPositionCubes = objCubes.posInitial;
+    cubesPhy.push(...objCubes.cubes);
     cubesThree.push(...cubeThreejs.createCubes(cubes));
     for (const cube of cubesThree) {
       textureUtil.loadTexture("img/logo.jpeg", cube.material).then(() => {
         sceneManager.scene.add(cube);
       });
     }
-    sceneManager.camera.position.x = 1.7;
-    sceneManager.camera.position.y = 14;
-    sceneManager.camera.position.z = -15.5;
+    gsap.to(sceneManager.camera.position, {
+      x: 1.7,
+      y: 14,
+      z: -15.5,
+      duration: 2,
+      ease: "power2.inOut",
+    });
     gamePhysic.addWorld(ballPhysic);
+    control.control.enabled = false;
+    gameMenu.addGamePoint();
+
+    const canvas = d.querySelector("canvas.webgl");
+    canvas.addEventListener("mousedown", onMouseDown);
+    canvas.addEventListener("mouseup", onMouseUp);
+    canvas.addEventListener("touchstart", (e) => onMouseDown(e.touches[0]));
+    canvas.addEventListener("touchend", (e) => onMouseUp(e.changedTouches[0]));
   };
 
   sceneManager.envMap().then(() => {
     gameMenu.addEventListenerButtonPlay(startGame);
-
-    const tick = new Tick(
+    tick = new Tick(
       sceneManager.render,
       sceneManager.scene,
       sceneManager.camera,
@@ -138,7 +152,8 @@ import { Texture } from "./utils/Texture.js";
       ballPhysic,
       cubesPhy,
       cubesThree,
-      gameState
+      gameState,
+      gameMenu
     );
 
     tick.bucleTick();

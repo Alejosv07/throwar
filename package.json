@@ -8,6 +8,7 @@
   "devDependencies": {
     "cannon-es": "^0.20.0",
     "gh-pages": "^6.3.0",
+    "gsap": "^3.14.2",
     "lil-gui": "^0.21.0",
     "three": "^0.181.2",
     "vite": "^7.2.4"

@@ -58,9 +58,10 @@ export class GamePhysic {
 
   createCubes(quantity = 1, rows = 10) {
     let cubes = [];
+    let posInitial = new Float32Array(quantity*3);
     let posX = -5;
     let posY = 0;
-
+    let skip = 0;
     for (let index = 0; index < quantity; index++) {
       let cube = this.createCube();
       if (index === quantity / rows + posY) {
@@ -68,10 +69,16 @@ export class GamePhysic {
         posX += 1;
       }
 
+      posInitial[skip] = posX;
+      posInitial[skip+1] = 0.5 + (index - posY);
+      posInitial[skip+2] = 10;
+
+      skip +=3;
+
       cube.position.set(posX, 0.5 + (index - posY), 10);
       cubes.push(cube);
       this.addWorld(cube);
     }
-    return cubes;
+    return {cubes,posInitial};
   }
 }
