@@ -175,6 +175,11 @@ canvas {
   cursor: pointer;
   pointer-events: auto;
 }
+#ARButton{
+  cursor: pointer;
+  pointer-events: auto;
+
+}
 @keyframes wordUpDown {
   0% {
     transform: translateY(50%);
