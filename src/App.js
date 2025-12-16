@@ -17,6 +17,8 @@ import gsap from "gsap";
   const gameMenu = new GameMenu(d);
   const gamePhysic = new GamePhysic();
   const ballThreejs = new Ball();
+  
+  // Posición inicial de reposo
   ballThreejs.mesh.position.set(1.7, 6.6, -13);
 
   const cubeThreejs = new Cube();
@@ -60,19 +62,21 @@ import gsap from "gsap";
         return;
     }
 
-    pointer.x = (event.clientX / w.innerWidth) * 2 - 1;
-    pointer.y = -(event.clientY / w.innerHeight) * 2 + 1;
+    const clientX = event.clientX || (event.changedTouches && event.changedTouches[0].clientX);
+    const clientY = event.clientY || (event.changedTouches && event.changedTouches[0].clientY);
+    pointer.x = (clientX / w.innerWidth) * 2 - 1;
+    pointer.y = -(clientY / w.innerHeight) * 2 + 1;
     raycaster.setFromCamera(pointer, sceneManager.camera);
     const direction = raycaster.ray.direction.clone();
 
     const dragEndTime = performance.now();
     const dragDuration = dragEndTime - dragStartTime;
     const forceFactor = Math.min(dragDuration / 1000, 1);
-    const launchForce = 15 + 85 * forceFactor;
+    
+    const launchForce = 20 + 80 * forceFactor;
 
     ballPhysic.type = Body.DYNAMIC;
     ballPhysic.wakeUp();
-    
     gameState.isBallInPlay = true;
 
     ballPhysic.velocity.set(
@@ -93,6 +97,7 @@ import gsap from "gsap";
     });
 
     control.control.enabled = false;
+
     const objCubes = gamePhysic.createCubes(cubesCount, 10);
     tick.arrayPositionCubes = objCubes.posInitial;
     cubesPhy.push(...objCubes.cubes);
@@ -113,23 +118,45 @@ import gsap from "gsap";
     gameMenu.addGamePoint();
 
     const canvas = sceneManager.render.domElement;
+
     canvas.addEventListener("mousedown", () => {
       if (!gameState.isBallInPlay) {
           isDragging = true;
           dragStartTime = performance.now();
       }
     });
+    
     canvas.addEventListener("mouseup", (e) => {
       if (isDragging) shootBall(e);
     });
+
+    canvas.addEventListener("touchstart", (e) => {
+      if (!gameState.isBallInPlay) {
+          isDragging = true;
+          dragStartTime = performance.now();
+      }
+    }, { passive: false });
+
+    canvas.addEventListener("touchend", (e) => {
+      if (isDragging) shootBall(e);
+    }, { passive: false });
   };
 
   sceneManager.envMap().then(() => {
     gameMenu.addEventListenerButtonPlay(startGame);
 
     tick = new Tick(
-      sceneManager.render, sceneManager.scene, sceneManager.camera, control,
-      gamePhysic, ballThreejs, ballPhysic, cubesPhy, cubesThree, gameState, gameMenu
+      sceneManager.render,
+      sceneManager.scene,
+      sceneManager.camera,
+      control,
+      gamePhysic,
+      ballThreejs,
+      ballPhysic,
+      cubesPhy,
+      cubesThree,
+      gameState,
+      gameMenu
     );
 
     sceneManager.render.setAnimationLoop(tick.bucleTick);
